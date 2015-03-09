@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Did you see all Virals?</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="error_player">error_player</string>
+
+    <string name="edit_message">Edit MEssage</string>
+    <string name="button_send">button_send</string>
+
+    <string name="videolist_demo_name">videolist_demo_name</string>
+</resources>
