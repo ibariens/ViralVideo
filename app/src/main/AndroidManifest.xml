@@ -23,7 +23,7 @@
 
         <activity
             android:label="@string/videolist_demo_name"
-            android:name=".VideoListDemoActivity"
+            android:name=".ViralIndexActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <meta-data android:name="@string/minVersion" android:value="13"/>
             <meta-data android:name="@string/isLaunchableActivity" android:value="true"/>

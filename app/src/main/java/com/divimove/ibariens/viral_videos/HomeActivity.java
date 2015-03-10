@@ -14,10 +14,6 @@ public class HomeActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-
-
-
     }
 
 
@@ -46,7 +42,7 @@ public class HomeActivity extends ActionBarActivity {
 
     public void sendMessage(View view) {
 
-        Intent intent = new Intent(this, VideoListDemoActivity.class);
+        Intent intent = new Intent(this, ViralIndexActivity.class);
         startActivity(intent);
     }
 }
