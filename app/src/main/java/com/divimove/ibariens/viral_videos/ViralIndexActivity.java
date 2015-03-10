@@ -55,11 +55,10 @@ public final class ViralIndexActivity extends Activity implements OnFullscreenLi
 
     setContentView(R.layout.activity_viral_index);
 
-    listFragment = (Video.VideoListFragment) getFragmentManager().findFragmentById(R.id.list_fragment);
-    videoFragment =
-        (Video.VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);
+    listFragment  = (Video.VideoListFragment) getFragmentManager().findFragmentById(R.id.list_fragment);
+    videoFragment = (Video.VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);
 
-    videoBox = findViewById(R.id.video_box);
+    videoBox    = findViewById(R.id.video_box);
     closeButton = findViewById(R.id.close_button);
 
     videoBox.setVisibility(View.INVISIBLE);
