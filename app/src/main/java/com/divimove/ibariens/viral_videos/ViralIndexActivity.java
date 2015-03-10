@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -195,5 +196,4 @@ public final class ViralIndexActivity extends Activity implements OnFullscreenLi
     params.gravity = gravity;
     view.setLayoutParams(params);
   }
-
 }

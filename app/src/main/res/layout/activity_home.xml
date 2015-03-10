@@ -2,16 +2,90 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:weightSum="1">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:background="#ffffff">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/diviLogo"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1.00"
+            android:src="@drawable/main_logo"
+            android:layout_marginTop="30dp"
+            android:onClick="sendMessage"/>/>
 
+        <TextView
+            android:textSize="20sp"
+            android:textColor="#0091CC"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="Total Amount of Videos:"
+            android:layout_weight="0.00"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+        <TextView
+            android:textSize="20sp"
+            android:textColor="#E84680"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="None"
+            android:id="@+id/total_videos"
+            android:layout_weight="0.00"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_send"
-        android:onClick="sendMessage"
-        android:layout_gravity="bottom" />
+        <TextView
+            android:textSize="20sp"
+            android:textColor="#0091CC"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="New video(s) found:"
+            android:layout_weight="0.00"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
+        <TextView
+            android:textSize="20sp"
+            android:textColor="#E84680"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="None"
+            android:id="@+id/total_new"
+            android:layout_weight="0.00"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:textSize="20sp"
+            android:textColor="#0091CC"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="Videos not seen yet:"
+            android:layout_weight="0.00"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:textSize="20sp"
+            android:textColor="#E84680"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="None"
+            android:id="@+id/total_watched"
+            android:layout_weight="0.00"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="30dp" />
+    </LinearLayout>
 </LinearLayout>

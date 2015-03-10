@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 import com.divimove.ibariens.viral_videos.helpers.DbVideo;
@@ -15,10 +16,12 @@ import com.divimove.ibariens.viral_videos.models.Video;
 import java.util.ArrayList;
 
 
+
 public class HomeActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -28,6 +31,15 @@ public class HomeActivity extends ActionBarActivity {
         int new_videos = db.getNewVideos();
         int total_videos = db.getTotalVideos();
         int watched_videos = db.getWatchedVideos();
+
+        TextView total_videos_view = (TextView) findViewById(R.id.total_videos);
+        total_videos_view.setText(Integer.toString(total_videos));
+
+        TextView total_new_view = (TextView) findViewById(R.id.total_new);
+        total_new_view.setText(Integer.toString(new_videos));
+
+        TextView watched_videos_view = (TextView) findViewById(R.id.total_watched);
+        watched_videos_view.setText(Integer.toString(total_videos - watched_videos));
     }
 
 
@@ -59,4 +71,7 @@ public class HomeActivity extends ActionBarActivity {
         Intent intent = new Intent(this, ViralIndexActivity.class);
         startActivity(intent);
     }
+
+
+
 }
