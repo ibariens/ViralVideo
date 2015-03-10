@@ -6,12 +6,19 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 
+import com.divimove.ibariens.viral_videos.models.Video;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class ViralFetcher extends AsyncTask<String, Void, Boolean> {
@@ -47,19 +54,54 @@ public class ViralFetcher extends AsyncTask<String, Void, Boolean> {
 
         // get JSON data from URL
         JSONArray json = jParser.getJSONFromUrl("https://datacruncher.divimove.com/viral_videos");
+        if (json != null) {
 
-        for (int i = 0; i < json.length(); i++) {
+            for (int i = 0; i < json.length(); i++) {
 
-            try {
-                JSONObject c = json.getJSONObject(i);
-                HashMap<String, String> map = new HashMap<String, String>();
-
-                map.put("channel_id", c.getString("channel_id"));
-                jsonlist.add(map);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                try {
+                    JSONObject j = json.getJSONObject(i);
+                    createOrUpdateVideoInDb(j);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return null;
+    }
+
+    private void createOrUpdateVideoInDb(JSONObject j) throws JSONException {
+        String channel_id = j.getString("channel_id");
+        DbVideo db = new DbVideo(this.context);
+
+        Video video = db.getVideo(channel_id);
+        if (video == null) {
+            // New video found!
+            video = new Video();
+            video.setChannel_id(channel_id);
+            video.setVideo_title(j.getString("video_title"));
+            video.setWatched(false);
+            video.setIs_new(true);
+            video.setView_count(j.getLong("view_count"));
+
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            try {
+                Date date = format.parse(j.getString("published_at"));
+                video.setPublished_at(date);
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            db.addVideo(video);
+        }
+        else {
+            // Update video for latest view count and title
+            video.setChannel_id(channel_id);
+            video.setVideo_title(j.getString("video_title"));
+            video.setIs_new(false);
+            video.setView_count(j.getLong("view_count"));
+
+            db.updateVideo(video);
+        }
     }
 }

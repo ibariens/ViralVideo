@@ -12,11 +12,7 @@ import com.divimove.ibariens.viral_videos.helpers.DbVideo;
 import com.divimove.ibariens.viral_videos.helpers.ViralFetcher;
 import com.divimove.ibariens.viral_videos.models.Video;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.ArrayList;
 
 
 public class HomeActivity extends ActionBarActivity {
@@ -28,25 +24,10 @@ public class HomeActivity extends ActionBarActivity {
 
         new ViralFetcher(HomeActivity.this).execute();
         DbVideo db = new DbVideo(this);
-
-        Video video = new Video();
-        video.setChannel_id("sdfsdf");
-        video.setVideo_title("Sdfsdf");
-        video.setWatched(false);
-        video.setIs_new(true);
-
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        try {
-            Date date = format.parse("1984-12-06");
-            video.setPublished_at(date);
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        video.setView_count(23423424243L);
-
-        db.addVideo(video);
+        ArrayList<Video> videos = db.getAllVideos();
+        int new_videos = db.getNewVideos();
+        int total_videos = db.getTotalVideos();
+        int watched_videos = db.getWatchedVideos();
     }
 
 

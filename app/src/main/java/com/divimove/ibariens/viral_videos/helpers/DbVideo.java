@@ -8,12 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.divimove.ibariens.viral_videos.models.Video;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -21,6 +19,8 @@ public class DbVideo extends SQLiteOpenHelper  {
 
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "ViralVideos";
+    private static final SimpleDateFormat date_formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+    private int watchedVideos;
 
     public DbVideo(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -51,12 +51,12 @@ public class DbVideo extends SQLiteOpenHelper  {
 
 
     // Why not in model?
-    public Video getVideo(int id) {
+    public Video getVideo(String channel_id) {
 
         String table = "videos";
         String[] columns = {"id", "channel_id", "video_title", "watched", "is_new", "published_at", "view_count"};
-        String selection = "id = ?";
-        String[] selection_args = {String.valueOf(id)};
+        String selection = "channel_id = ?";
+        String[] selection_args = {channel_id};
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor =
@@ -69,38 +69,40 @@ public class DbVideo extends SQLiteOpenHelper  {
                         null, // g. order by
                         null); // h. limit
 
-        if (cursor != null)
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
 
-        Video video = new Video();
-        video.setId(Integer.parseInt(cursor.getString(0)));
-        video.setChannel_id(cursor.getString(1));
-        video.setVideo_title(cursor.getString(2));
-        video.setWatched((cursor.getInt(3) == 1));
-        video.setIs_new((cursor.getInt(4) == 1));
+            Video video = new Video();
+            video.setId(Integer.parseInt(cursor.getString(0)));
+            video.setChannel_id(cursor.getString(1));
+            video.setVideo_title(cursor.getString(2));
+            video.setWatched((cursor.getInt(3) == 1));
+            video.setIs_new((cursor.getInt(4) == 1));
 
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        try {
-            Date date = format.parse(cursor.getString(5));
-            video.setPublished_at(date);
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            try {
+                Date date = date_formatter.parse(cursor.getString(5));
+                video.setPublished_at(date);
+            } catch (ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            video.setView_count(cursor.getLong(6));
+            return video;
         }
-
-        video.setView_count(cursor.getLong(6));
-        return video;
+        else {
+          return null;
+        }
     }
 
     public void addVideo(Video video){
-
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("channel_id",  video.getChannel_id());
         values.put("video_title", video.getVideo_title());
         values.put("watched", video.getWatched());
         values.put("is_new", video.getIs_new());
-        values.put("published_at", video.getPublished_at().toString());
+        values.put("published_at", date_formatter.format(video.getPublished_at()));
         values.put("view_count", video.getView_count());
 
         db.insert("videos",
@@ -111,36 +113,40 @@ public class DbVideo extends SQLiteOpenHelper  {
     }
 
 
-    public List<Video> getAllVideos() {
+    public ArrayList<Video>  getAllVideos() {
 
-        List<Video> videos = new LinkedList<Video>();
+        ArrayList<Video> videos = new ArrayList<Video>();
         String query = "SELECT  * FROM " + "videos";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        Video video = null;
-        if (cursor.moveToFirst()) {
-            do {
-                video.setId(Integer.parseInt(cursor.getString(0)));
-                video.setChannel_id(cursor.getString(1));
-                video.setVideo_title(cursor.getString(2));
-                video.setWatched((cursor.getInt(3) == 1));
-                video.setIs_new((cursor.getInt(4) == 1));
+        if (cursor != null && cursor.getCount() > 0) {
+            if (cursor.moveToFirst()) {
+                do {
+                    Video video = new Video();
+                    video.setId(Integer.parseInt(cursor.getString(0)));
+                    video.setChannel_id(cursor.getString(1));
+                    video.setVideo_title(cursor.getString(2));
+                    video.setWatched((cursor.getInt(3) == 1));
+                    video.setIs_new((cursor.getInt(4) == 1));
 
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                try {
-                    Date date = format.parse(cursor.getString(5));
-                    video.setPublished_at(date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                    try {
+                        Date date = date_formatter.parse(cursor.getString(5));
+                        video.setPublished_at(date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
 
-                video.setView_count(cursor.getLong(6));
-                videos.add(video);
-            } while (cursor.moveToNext());
+                    video.setView_count(cursor.getLong(6));
+                    videos.add(video);
+                } while (cursor.moveToNext());
+            }
+            return videos;
         }
-        return videos;
+        else{
+            return null;
+        }
     }
 
 
@@ -153,7 +159,7 @@ public class DbVideo extends SQLiteOpenHelper  {
         values.put("video_title", video.getVideo_title());
         values.put("watched", video.getWatched());
         values.put("is_new", video.getIs_new());
-        values.put("published_at", video.getPublished_at().toString());
+        values.put("published_at", date_formatter.format(video.getPublished_at()));
         values.put("view_count", video.getView_count());
 
         int i = db.update("videos",
@@ -163,6 +169,42 @@ public class DbVideo extends SQLiteOpenHelper  {
 
         db.close();
         return i;
+    }
+
+    public int getNewVideos() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String count = "SELECT count(id) FROM videos WHERE is_new = 1";
+        Cursor cursor = db.rawQuery(count, null);
+        if (cursor.moveToFirst()){
+            return cursor.getInt(0);
+        }
+        else{
+            return 0;
+        }
+    }
+
+    public int getTotalVideos() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String count = "SELECT count(id) FROM videos";
+        Cursor cursor = db.rawQuery(count, null);
+        if (cursor.moveToFirst()){
+            return cursor.getInt(0);
+        }
+        else{
+            return 0;
+        }
+    }
+
+    public int getWatchedVideos() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String count = "SELECT count(id) FROM videos WHERE watched = 1";
+        Cursor cursor = db.rawQuery(count, null);
+        if (cursor.moveToFirst()){
+            return cursor.getInt(0);
+        }
+        else{
+            return 0;
+        }
     }
 }
 
