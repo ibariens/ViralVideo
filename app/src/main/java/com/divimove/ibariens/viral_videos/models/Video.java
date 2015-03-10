@@ -5,6 +5,8 @@ import java.util.Date;
 public class Video {
     private int     id;
     private String  channel_id;
+    private String  video_id;
+
     private String  video_title;
     private Boolean watched;
     private Boolean is_new;
@@ -71,6 +73,12 @@ public class Video {
         this.view_count = view_count;
     }
 
+    public String getVideo_id() {
+        return video_id;
+    }
 
+    public void setVideo_id(String video_id) {
+        this.video_id = video_id;
+    }
 }
 

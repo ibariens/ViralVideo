@@ -55,7 +55,6 @@ public class ViralFetcher extends AsyncTask<String, Void, Boolean> {
         // get JSON data from URL
         JSONArray json = jParser.getJSONFromUrl("https://datacruncher.divimove.com/viral_videos");
         if (json != null) {
-
             for (int i = 0; i < json.length(); i++) {
 
                 try {
@@ -78,6 +77,7 @@ public class ViralFetcher extends AsyncTask<String, Void, Boolean> {
             // New video found!
             video = new Video();
             video.setChannel_id(channel_id);
+            video.setVideo_id(j.getString("video_id"));
             video.setVideo_title(j.getString("video_title"));
             video.setWatched(false);
             video.setIs_new(true);
@@ -97,6 +97,7 @@ public class ViralFetcher extends AsyncTask<String, Void, Boolean> {
         else {
             // Update video for latest view count and title
             video.setChannel_id(channel_id);
+            video.setVideo_id(j.getString("video_id"));
             video.setVideo_title(j.getString("video_title"));
             video.setIs_new(false);
             video.setView_count(j.getLong("view_count"));

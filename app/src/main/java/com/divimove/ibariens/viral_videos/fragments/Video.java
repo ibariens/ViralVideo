@@ -1,11 +1,14 @@
 package com.divimove.ibariens.viral_videos.fragments;
 
 import android.app.ListFragment;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import com.divimove.ibariens.viral_videos.ViralVideoApp;
+import com.divimove.ibariens.viral_videos.helpers.DbVideo;
 import com.divimove.ibariens.viral_videos.secrets.DeveloperKey;
 import com.divimove.ibariens.viral_videos.R;
 import com.divimove.ibariens.viral_videos.ViralIndexActivity;
@@ -84,17 +87,19 @@ public class Video {
      */
     public static final class VideoListFragment extends ListFragment {
 
+        public VideoListFragment(){}
+
         private static final List<VideoEntry> VIDEO_LIST;
+        private static final DbVideo db = new DbVideo(ViralVideoApp.getContext());
+        private static final ArrayList<com.divimove.ibariens.viral_videos.models.Video> video_list = db.getAllVideos();
 
         static {
             List<VideoEntry> list = new ArrayList<VideoEntry>();
-            list.add(new VideoEntry("YouTube Collection", "Y_UmWdcTrrc"));
-            list.add(new VideoEntry("GMail Tap", "1KhZKNZO8mQ"));
-            list.add(new VideoEntry("Chrome Multitask", "UiLSiqyDf4Y"));
-            list.add(new VideoEntry("Google Fiber", "re0VRK6ouwI"));
-            list.add(new VideoEntry("Autocompleter", "blB_X38YSxQ"));
-            list.add(new VideoEntry("GMail Motion", "Bu927_ul_X0"));
-            list.add(new VideoEntry("Translate for Animals", "3I24bSteJpw"));
+
+            for (int i = 0; i < video_list.size(); i++) {
+                list.add(new VideoEntry(video_list.get(i).getVideo_title(), video_list.get(i).getVideo_id()));
+            }
+
             VIDEO_LIST = Collections.unmodifiableList(list);
         }
 

@@ -17,7 +17,7 @@ import java.util.Locale;
 
 public class DbVideo extends SQLiteOpenHelper  {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "ViralVideos";
     private static final SimpleDateFormat date_formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
     private int watchedVideos;
@@ -31,6 +31,7 @@ public class DbVideo extends SQLiteOpenHelper  {
         String CREATE_BOOK_TABLE = "CREATE TABLE videos ( " +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "channel_id TEXT, "+
+                "video_id TEXT, "+
                 "video_title TEXT, "+
                 "watched BOOLEAN," +
                 "is_new BOOLEAN," +
@@ -54,7 +55,7 @@ public class DbVideo extends SQLiteOpenHelper  {
     public Video getVideo(String channel_id) {
 
         String table = "videos";
-        String[] columns = {"id", "channel_id", "video_title", "watched", "is_new", "published_at", "view_count"};
+        String[] columns = {"id", "channel_id", "video_id", "video_title", "watched", "is_new", "published_at", "view_count"};
         String selection = "channel_id = ?";
         String[] selection_args = {channel_id};
 
@@ -75,19 +76,20 @@ public class DbVideo extends SQLiteOpenHelper  {
             Video video = new Video();
             video.setId(Integer.parseInt(cursor.getString(0)));
             video.setChannel_id(cursor.getString(1));
-            video.setVideo_title(cursor.getString(2));
-            video.setWatched((cursor.getInt(3) == 1));
-            video.setIs_new((cursor.getInt(4) == 1));
+            video.setVideo_id(cursor.getString(2));
+            video.setVideo_title(cursor.getString(3));
+            video.setWatched((cursor.getInt(4) == 1));
+            video.setIs_new((cursor.getInt(5) == 1));
 
             try {
-                Date date = date_formatter.parse(cursor.getString(5));
+                Date date = date_formatter.parse(cursor.getString(6));
                 video.setPublished_at(date);
             } catch (ParseException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
-            video.setView_count(cursor.getLong(6));
+            video.setView_count(cursor.getLong(7));
             return video;
         }
         else {
@@ -99,6 +101,7 @@ public class DbVideo extends SQLiteOpenHelper  {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("channel_id",  video.getChannel_id());
+        values.put("video_id",  video.getVideo_id());
         values.put("video_title", video.getVideo_title());
         values.put("watched", video.getWatched());
         values.put("is_new", video.getIs_new());
@@ -113,7 +116,7 @@ public class DbVideo extends SQLiteOpenHelper  {
     }
 
 
-    public ArrayList<Video>  getAllVideos() {
+    public ArrayList<Video> getAllVideos() {
 
         ArrayList<Video> videos = new ArrayList<Video>();
         String query = "SELECT  * FROM " + "videos";
@@ -127,18 +130,19 @@ public class DbVideo extends SQLiteOpenHelper  {
                     Video video = new Video();
                     video.setId(Integer.parseInt(cursor.getString(0)));
                     video.setChannel_id(cursor.getString(1));
-                    video.setVideo_title(cursor.getString(2));
-                    video.setWatched((cursor.getInt(3) == 1));
-                    video.setIs_new((cursor.getInt(4) == 1));
+                    video.setVideo_id(cursor.getString(2));
+                    video.setVideo_title(cursor.getString(3));
+                    video.setWatched((cursor.getInt(4) == 1));
+                    video.setIs_new((cursor.getInt(5) == 1));
 
                     try {
-                        Date date = date_formatter.parse(cursor.getString(5));
+                        Date date = date_formatter.parse(cursor.getString(6));
                         video.setPublished_at(date);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
-                    video.setView_count(cursor.getLong(6));
+                    video.setView_count(cursor.getLong(7));
                     videos.add(video);
                 } while (cursor.moveToNext());
             }
@@ -156,6 +160,7 @@ public class DbVideo extends SQLiteOpenHelper  {
 
         ContentValues values = new ContentValues();
         values.put("channel_id",  video.getChannel_id());
+        values.put("video_id",  video.getVideo_id());
         values.put("video_title", video.getVideo_title());
         values.put("watched", video.getWatched());
         values.put("is_new", video.getIs_new());
