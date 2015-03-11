@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 import com.divimove.ibariens.viral_videos.models.Video;
@@ -69,14 +70,14 @@ public class ViralFetcher extends AsyncTask<String, Void, Boolean> {
     }
 
     private void createOrUpdateVideoInDb(JSONObject j) throws JSONException {
-        String channel_id = j.getString("channel_id");
+        String video_id = j.getString("video_id");
         DbVideo db = new DbVideo(this.context);
 
-        Video video = db.getVideo(channel_id);
+        Video video = db.getVideo(video_id);
         if (video == null) {
             // New video found!
             video = new Video();
-            video.setChannel_id(channel_id);
+            video.setChannel_id(j.getString("channel_id"));
             video.setVideo_id(j.getString("video_id"));
             video.setVideo_title(j.getString("video_title"));
             video.setWatched(false);
@@ -96,7 +97,7 @@ public class ViralFetcher extends AsyncTask<String, Void, Boolean> {
         }
         else {
             // Update video for latest view count and title
-            video.setChannel_id(channel_id);
+            video.setChannel_id(j.getString("channel_id"));
             video.setVideo_id(j.getString("video_id"));
             video.setVideo_title(j.getString("video_title"));
             video.setIs_new(false);

@@ -52,12 +52,12 @@ public class DbVideo extends SQLiteOpenHelper  {
 
 
     // Why not in model?
-    public Video getVideo(String channel_id) {
+    public Video getVideo(String video_id) {
 
         String table = "videos";
         String[] columns = {"id", "channel_id", "video_id", "video_title", "watched", "is_new", "published_at", "view_count"};
-        String selection = "channel_id = ?";
-        String[] selection_args = {channel_id};
+        String selection = "video_id = ?";
+        String[] selection_args = {video_id};
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor =
