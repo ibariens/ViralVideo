@@ -42,7 +42,7 @@ public class ViralIndexGridActivity extends Activity implements YouTubePlayer.On
 
 
         for (int i = 0; i < video_list.size(); i++) {
-          video_entry_list.add(new VideoEntry(video_list.get(i).getVideo_title(), video_list.get(i).getVideo_id()));
+          video_entry_list.add(new VideoEntry(video_list.get(i).getVideo_title(), video_list.get(i).getVideo_id(), video_list.get(i).getWatched()));
         }
 
         adapter = new GridViewAdapter(this, video_entry_list);
@@ -51,9 +51,7 @@ public class ViralIndexGridActivity extends Activity implements YouTubePlayer.On
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView parent, View v, int position, long id) {
-                Toast.makeText(getApplicationContext(),  "" + position, Toast.LENGTH_SHORT).show();
-
-                Log.d("click", "click");
+                Toast.makeText(getApplicationContext(),  video_entry_list.get(position).title, Toast.LENGTH_SHORT).show();
                 String videoId = video_entry_list.get(position).videoId;
 
                 Video.VideoFragment videoFragment = (Video.VideoFragment) getFragmentManager().findFragmentById(R.id.video_fragment_container);

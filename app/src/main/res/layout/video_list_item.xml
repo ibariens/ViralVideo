@@ -15,24 +15,25 @@
   limitations under the License.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="95dp"
+    android:layout_width="wrap_content"
+    android:layout_height= "wrap_content"
     android:orientation="horizontal"
     android:gravity="center"
     android:background="?android:attr/activatedBackgroundIndicator">
 
   <com.google.android.youtube.player.YouTubeThumbnailView
       android:id="@+id/thumbnail"
-      android:layout_width="50dp"
-      android:layout_height="50dp"
+      android:layout_width="60dp"
+      android:layout_height="60dp"
       android:src="@drawable/no_thumbnail"
-      android:scaleType="centerInside"/>
+      android:scaleType="centerCrop"/>
 
     <ImageView
         android:id="@+id/thumbnail_watched"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:scaleType="centerInside"
+        android:visibility="invisible"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:scaleType="centerCrop"
         android:alpha="0.5"
-        android:src="@drawable/main_logo"/>
+        android:src="@drawable/watched"/>
 </RelativeLayout>

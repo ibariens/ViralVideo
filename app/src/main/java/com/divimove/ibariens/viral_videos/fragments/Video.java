@@ -3,6 +3,8 @@ package com.divimove.ibariens.viral_videos.fragments;
 import android.os.Bundle;
 
 import com.divimove.ibariens.viral_videos.ViralIndexGridActivity;
+import com.divimove.ibariens.viral_videos.ViralVideoApp;
+import com.divimove.ibariens.viral_videos.helpers.DbVideo;
 import com.divimove.ibariens.viral_videos.secrets.DeveloperKey;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -15,6 +17,7 @@ public class Video {
 
         private YouTubePlayer player;
         private String videoId;
+        private final DbVideo db = new DbVideo(ViralVideoApp.getContext());
 
         public static VideoFragment newInstance() {
             return new VideoFragment();
@@ -37,6 +40,9 @@ public class Video {
 
         public void setVideoId(String videoId) {
             if (videoId != null && !videoId.equals(this.videoId)) {
+                db.setVideoAsWatched(videoId);
+                db.close();
+
                 this.videoId = videoId;
                 if (player != null) {
                     player.cueVideo(videoId);

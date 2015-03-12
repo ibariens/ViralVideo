@@ -29,7 +29,7 @@ public class HomeActivity extends ActionBarActivity {
         ArrayList<Video> videos = db.getAllVideos();
         int new_videos = db.getNewVideos();
         int total_videos = db.getTotalVideos();
-        int watched_videos = db.getWatchedVideos();
+        int watched_videos = db.getWatchedVideos().size();
 
         TextView total_videos_view = (TextView) findViewById(R.id.total_videos);
         total_videos_view.setText(Integer.toString(total_videos));

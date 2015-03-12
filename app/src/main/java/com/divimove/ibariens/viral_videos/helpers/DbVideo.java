@@ -200,16 +200,30 @@ public class DbVideo extends SQLiteOpenHelper  {
         }
     }
 
-    public int getWatchedVideos() {
+    public ArrayList<String> getWatchedVideos() {
         SQLiteDatabase db = this.getWritableDatabase();
-        String count = "SELECT count(id) FROM videos WHERE watched = 1";
-        Cursor cursor = db.rawQuery(count, null);
-        if (cursor.moveToFirst()){
-            return cursor.getInt(0);
+        ArrayList<String> results = new ArrayList<String>();
+
+        String query = "SELECT video_id FROM videos WHERE watched = 1";
+        Cursor cursor = db.rawQuery(query, null);
+
+
+
+        if (cursor != null && cursor.getCount() > 0) {
+            if (cursor.moveToFirst()) {
+                do {
+                    results.add(cursor.getString(0));
+                } while (cursor.moveToNext());
+            }
         }
-        else{
-            return 0;
-        }
+        return results;
+    }
+
+    public void setVideoAsWatched(String videoId) {
+        // Bit Slow, but lazy way to do it.
+        Video video = getVideo(videoId);
+        video.setWatched(true);
+        updateVideo(video);
     }
 }
 

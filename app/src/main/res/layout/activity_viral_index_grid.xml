@@ -33,9 +33,9 @@
         android:id="@+id/view_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="90dp"
+        android:columnWidth="60dp"
         android:numColumns="auto_fit"
-        android:stretchMode="columnWidth"
+        android:stretchMode="none"
         android:layout_gravity="bottom" />
 
 </LinearLayout>

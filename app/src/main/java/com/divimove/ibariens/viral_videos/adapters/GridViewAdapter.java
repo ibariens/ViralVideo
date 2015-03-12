@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.divimove.ibariens.viral_videos.R;
+import com.divimove.ibariens.viral_videos.helpers.DbVideo;
+import com.divimove.ibariens.viral_videos.models.Video;
 import com.divimove.ibariens.viral_videos.models.VideoEntry;
 import com.divimove.ibariens.viral_videos.secrets.DeveloperKey;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -70,6 +72,11 @@ public class GridViewAdapter extends BaseAdapter {
             // 1) The view has not yet been created - we need to initialize the YouTubeThumbnailView.
             view = inflater.inflate(R.layout.video_list_item, parent, false);
             YouTubeThumbnailView thumbnail = (YouTubeThumbnailView) view.findViewById(R.id.thumbnail);
+           // I think I have this bug.
+           // if (entry.watched){
+           //     View watched_mark = view.findViewById(R.id.thumbnail_watched);
+           //     watched_mark.setVisibility(View.VISIBLE);
+           // }
             thumbnail.setTag(entry.videoId);
             thumbnail.initialize(DeveloperKey.DEVELOPER_KEY, thumbnailListener);
         } else {
@@ -86,6 +93,8 @@ public class GridViewAdapter extends BaseAdapter {
                 loader.setVideo(entry.videoId);
             }
         }
+
+
 
         return view;
     }
