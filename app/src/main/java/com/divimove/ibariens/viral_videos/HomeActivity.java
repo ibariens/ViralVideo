@@ -1,13 +1,12 @@
 package com.divimove.ibariens.viral_videos;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
 
 import com.divimove.ibariens.viral_videos.helpers.DbVideo;
 import com.divimove.ibariens.viral_videos.helpers.ViralFetcher;
@@ -68,7 +67,7 @@ public class HomeActivity extends ActionBarActivity {
 
     public void sendMessage(View view) {
 
-        Intent intent = new Intent(this, ViralIndexActivity.class);
+        Intent intent = new Intent(this, ViralIndexGridActivity.class);
         startActivity(intent);
     }
 

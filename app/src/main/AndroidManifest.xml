@@ -23,14 +23,14 @@
         </activity>
 
 
-
         <activity
-            android:label="@string/videolist_demo_name"
-            android:name=".ViralIndexActivity"
+            android:label="@string/viral_grid_name"
+            android:name=".ViralIndexGridActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
             <meta-data android:name="@string/minVersion" android:value="13"/>
             <meta-data android:name="@string/isLaunchableActivity" android:value="true"/>
         </activity>
+
 
     </application>
 

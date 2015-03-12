@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -20,7 +19,7 @@
             android:layout_weight="1.00"
             android:src="@drawable/main_logo"
             android:layout_marginTop="30dp"
-            android:onClick="sendMessage"/>/>
+            android:onClick="sendMessage"/>
 
         <TextView
             android:textSize="20sp"
