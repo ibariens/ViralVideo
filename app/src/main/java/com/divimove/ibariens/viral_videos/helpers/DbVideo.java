@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
-public class DbVideo extends SQLiteOpenHelper  {
+public class DbVideo extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "ViralVideos";
@@ -30,9 +30,9 @@ public class DbVideo extends SQLiteOpenHelper  {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_BOOK_TABLE = "CREATE TABLE videos ( " +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "channel_id TEXT, "+
-                "video_id TEXT, "+
-                "video_title TEXT, "+
+                "channel_id TEXT, " +
+                "video_id TEXT, " +
+                "video_title TEXT, " +
                 "watched BOOLEAN," +
                 "is_new BOOLEAN," +
                 "published_at TIMESTAMP," +
@@ -46,9 +46,6 @@ public class DbVideo extends SQLiteOpenHelper  {
         db.execSQL("DROP TABLE IF EXISTS videos");
         this.onCreate(db);
     }
-
-
-
 
 
     // Why not in model?
@@ -91,17 +88,16 @@ public class DbVideo extends SQLiteOpenHelper  {
 
             video.setView_count(cursor.getLong(7));
             return video;
-        }
-        else {
-          return null;
+        } else {
+            return null;
         }
     }
 
-    public void addVideo(Video video){
+    public void addVideo(Video video) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("channel_id",  video.getChannel_id());
-        values.put("video_id",  video.getVideo_id());
+        values.put("channel_id", video.getChannel_id());
+        values.put("video_id", video.getVideo_id());
         values.put("video_title", video.getVideo_title());
         values.put("watched", video.getWatched());
         values.put("is_new", video.getIs_new());
@@ -109,21 +105,84 @@ public class DbVideo extends SQLiteOpenHelper  {
         values.put("view_count", video.getView_count());
 
         db.insert("videos",
-                    null, //nullColumnHack
-                    values);
+                null, //nullColumnHack
+                values);
 
         db.close();
     }
 
 
-    public ArrayList<Video> getAllVideos() {
+    public int updateVideo(Video video) {
 
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("channel_id", video.getChannel_id());
+        values.put("video_id", video.getVideo_id());
+        values.put("video_title", video.getVideo_title());
+        values.put("watched", video.getWatched());
+        values.put("is_new", video.getIs_new());
+        values.put("published_at", date_formatter.format(video.getPublished_at()));
+        values.put("view_count", video.getView_count());
+
+        int i = db.update("videos",
+                values,
+                "id = ?",
+                new String[]{String.valueOf(video.getId())});
+
+        db.close();
+        return i;
+    }
+
+
+    public ArrayList<Video> getAllVideos() {
         ArrayList<Video> videos = new ArrayList<Video>();
-        String query = "SELECT  * FROM " + "videos";
+
+        String query = "SELECT  * FROM videos";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
+        videos = extractVideoFromDb(cursor);
 
+        return videos;
+    }
+
+
+    public ArrayList<Video> getNewVideos() {
+        ArrayList<Video> videos = new ArrayList<Video>();
+
+        String query = "SELECT * FROM videos WHERE is_new = 1";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        videos = extractVideoFromDb(cursor);
+
+        return videos;
+    }
+
+    public ArrayList<Video> GetUnwatchedVideos() {
+        ArrayList<Video> videos = new ArrayList<Video>();
+
+        String query = "SELECT * FROM videos WHERE watched = 0";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        videos = extractVideoFromDb(cursor);
+
+        return videos;
+    }
+
+
+    public void setVideoAsWatched(String videoId) {
+        // Bit Slow, but lazy way to do it.
+        Video video = getVideo(videoId);
+        video.setWatched(true);
+        updateVideo(video);
+    }
+
+
+    private ArrayList<Video> extractVideoFromDb(Cursor cursor) {
+        ArrayList<Video> videos = new ArrayList<Video>();
         if (cursor != null && cursor.getCount() > 0) {
             if (cursor.moveToFirst()) {
                 do {
@@ -146,85 +205,8 @@ public class DbVideo extends SQLiteOpenHelper  {
                     videos.add(video);
                 } while (cursor.moveToNext());
             }
-            return videos;
+
         }
-        else{
-            return null;
-        }
-    }
-
-
-    public int updateVideo(Video video) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("channel_id",  video.getChannel_id());
-        values.put("video_id",  video.getVideo_id());
-        values.put("video_title", video.getVideo_title());
-        values.put("watched", video.getWatched());
-        values.put("is_new", video.getIs_new());
-        values.put("published_at", date_formatter.format(video.getPublished_at()));
-        values.put("view_count", video.getView_count());
-
-        int i = db.update("videos",
-                values,
-                "id = ?",
-                new String[] { String.valueOf(video.getId()) });
-
-        db.close();
-        return i;
-    }
-
-    public int getNewVideos() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String count = "SELECT count(id) FROM videos WHERE is_new = 1";
-        Cursor cursor = db.rawQuery(count, null);
-        if (cursor.moveToFirst()){
-            return cursor.getInt(0);
-        }
-        else{
-            return 0;
-        }
-    }
-
-    public int getTotalVideos() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String count = "SELECT count(id) FROM videos";
-        Cursor cursor = db.rawQuery(count, null);
-        if (cursor.moveToFirst()){
-            return cursor.getInt(0);
-        }
-        else{
-            return 0;
-        }
-    }
-
-    public ArrayList<String> getWatchedVideos() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<String> results = new ArrayList<String>();
-
-        String query = "SELECT video_id FROM videos WHERE watched = 1";
-        Cursor cursor = db.rawQuery(query, null);
-
-
-
-        if (cursor != null && cursor.getCount() > 0) {
-            if (cursor.moveToFirst()) {
-                do {
-                    results.add(cursor.getString(0));
-                } while (cursor.moveToNext());
-            }
-        }
-        return results;
-    }
-
-    public void setVideoAsWatched(String videoId) {
-        // Bit Slow, but lazy way to do it.
-        Video video = getVideo(videoId);
-        video.setWatched(true);
-        updateVideo(video);
+        return videos;
     }
 }
-
-

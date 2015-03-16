@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:weightSum="1">
 
     <LinearLayout
@@ -18,8 +18,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1.00"
             android:src="@drawable/main_logo"
-            android:layout_marginTop="30dp"
-            android:onClick="sendMessage"/>
+            android:layout_marginTop="30dp"/>
 
         <TextView
             android:textSize="20sp"
@@ -73,7 +72,8 @@
             android:layout_weight="0.00"
             android:layout_marginTop="50dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" />
+            android:layout_marginRight="10dp"
+            />
 
         <TextView
             android:textSize="20sp"
@@ -86,5 +86,14 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="30dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fetch new Virals!"
+            android:id="@+id/viralFetcher"
+            android:layout_gravity="bottom"
+            android:onClick="fetchVirals" />
+
     </LinearLayout>
 </LinearLayout>

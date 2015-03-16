@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.divimove.ibariens.viral_videos.helpers.DbVideo;
 import com.divimove.ibariens.viral_videos.helpers.ViralFetcher;
@@ -14,9 +15,14 @@ import com.divimove.ibariens.viral_videos.models.Video;
 
 import java.util.ArrayList;
 
+import javax.xml.datatype.Duration;
 
 
 public class HomeActivity extends ActionBarActivity {
+
+    private int total_videos = 0;
+    private int new_videos = 0;
+    private int unwatched_videos = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,23 +30,32 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        new ViralFetcher(HomeActivity.this).execute();
         DbVideo db = new DbVideo(this);
         ArrayList<Video> videos = db.getAllVideos();
-        int new_videos = db.getNewVideos();
-        int total_videos = db.getTotalVideos();
-        int watched_videos = db.getWatchedVideos().size();
+        total_videos =  db.getAllVideos().size();
+        new_videos =  db.getNewVideos().size();
+        unwatched_videos =  db.GetUnwatchedVideos().size();
 
-        TextView total_videos_view = (TextView) findViewById(R.id.total_videos);
-        total_videos_view.setText(Integer.toString(total_videos));
+        UpdateLinks();
 
-        TextView total_new_view = (TextView) findViewById(R.id.total_new);
-        total_new_view.setText(Integer.toString(new_videos));
-
-        TextView watched_videos_view = (TextView) findViewById(R.id.total_watched);
-        watched_videos_view.setText(Integer.toString(total_videos - watched_videos));
+      db.close();
     }
 
+
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        DbVideo db = new DbVideo(this);
+        ArrayList<Video> videos = db.getAllVideos();
+        total_videos =  db.getAllVideos().size();
+        new_videos =  db.getNewVideos().size();
+        unwatched_videos =  db.GetUnwatchedVideos().size();
+
+        UpdateLinks();
+        db.close();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -65,12 +80,81 @@ public class HomeActivity extends ActionBarActivity {
     }
 
 
-    public void sendMessage(View view) {
-
-        Intent intent = new Intent(this, ViralIndexGridActivity.class);
-        startActivity(intent);
+    public void showVideos(View view, String mode) {
+         switch (mode) {
+             case "all":
+                 if (total_videos != 0 ) {
+                     startActivityGrid(mode);
+                 }
+                 break;
+             case "new":
+                 if (new_videos != 0 ) {
+                     startActivityGrid(mode);
+                 }
+                 break;
+             case "unwatched":
+                 if (unwatched_videos != 0 ) {
+                     startActivityGrid(mode);
+                 }
+         }
     }
 
 
 
+    private void startActivityGrid(String mode){
+        Intent intent = new Intent(this, ViralIndexGridActivity.class);
+        intent.putExtra("mode", mode);
+        startActivity(intent);
+    }
+
+
+    private void UpdateLinks() {
+        TextView total_videos_view = (TextView) findViewById(R.id.total_videos);
+        if (total_videos == 0) {
+            total_videos_view.setText(Integer.toString(total_videos));
+        }
+        else {
+            total_videos_view.setText(Integer.toString(total_videos) + " (click to show)");
+            total_videos_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showVideos(v, "all");
+                }
+            });
+        }
+
+        TextView total_new_view = (TextView) findViewById(R.id.total_new);
+        if (new_videos == 0) {
+            total_new_view.setText(Integer.toString(new_videos));
+        }
+        else {
+            total_new_view.setText(Integer.toString(new_videos) + " (click to show)");
+            total_new_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showVideos(v, "new");
+                }
+            });
+        }
+
+
+
+        TextView watched_videos_view = (TextView) findViewById(R.id.total_watched);
+        if (unwatched_videos == 0) {
+            watched_videos_view.setText(Integer.toString(unwatched_videos));
+        }
+        else {
+            watched_videos_view.setText(Integer.toString(unwatched_videos) + " (click to show)");
+            watched_videos_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showVideos(v, "unwatched");
+                }
+            });
+        }
+    }
+
+    public void fetchVirals(View view) {
+      new ViralFetcher(HomeActivity.this).execute();
+    }
 }

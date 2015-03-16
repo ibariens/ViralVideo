@@ -26,7 +26,7 @@ import java.util.List;
 public class ViralIndexGridActivity extends Activity implements YouTubePlayer.OnFullscreenListener {
 
     private static final DbVideo db = new DbVideo(ViralVideoApp.getContext());
-    private static final ArrayList<com.divimove.ibariens.viral_videos.models.Video> video_list = db.getAllVideos();
+    private static ArrayList<com.divimove.ibariens.viral_videos.models.Video> video_list =  new ArrayList<com.divimove.ibariens.viral_videos.models.Video>();
     /** The request code when calling startActivityForResult to recover from an API service error. */
     private static final int RECOVERY_DIALOG_REQUEST = 1;
     private List<VideoEntry> video_entry_list = new ArrayList<VideoEntry>();
@@ -40,6 +40,21 @@ public class ViralIndexGridActivity extends Activity implements YouTubePlayer.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viral_index_grid);
 
+        Bundle b = getIntent().getExtras();
+        String mode = b.getString("mode");
+
+
+        switch (mode) {
+            case "all":
+               video_list = db.getAllVideos();
+               break;
+            case "new":
+                video_list = db.getNewVideos();
+                break;
+            case "unwatched":
+                video_list = db.GetUnwatchedVideos();
+                break;
+        }
 
         for (int i = 0; i < video_list.size(); i++) {
           video_entry_list.add(new VideoEntry(video_list.get(i).getVideo_title(), video_list.get(i).getVideo_id(), video_list.get(i).getWatched()));
